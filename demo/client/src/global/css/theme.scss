@@ -1,0 +1,66 @@
+$default-theme: light;
+
+$theme: (
+    light: (
+        // button
+        button-accent: #007aff
+        button-accent-hover: #e5f1ff
+        button-muted: #adb5bd
+
+        // text
+        text-color-base: #000000
+        text-color-muted: #6c757d
+        text-color-inverted: #ffffff
+
+        // background
+        bg-color-fill: #f8f9fa
+    ),
+    dark: (
+        // button
+        button-accent: #ffffff,
+        button-accent-hover: #eef2ff,
+        button-muted: #6366f1,
+
+        // text
+        text-color-base: #ffffff,
+        text-color-muted: #c7d2fe,
+        text-color-inverted: #4f46e5,
+
+        // background
+        bg-color-fill: #121212,
+    ),
+    // more themes...
+);
+
+@function hex-to-rgb($hex) {
+    $r: red($hex);
+    $g: green($hex);
+    $b: blue($hex);
+    @return $r, $g, $b;
+}
+
+
+@each $key,
+$value in map-get($theme, $default-theme) {
+    :root {
+        --#{$key}: #{hex-to-rgb($value)};
+    }
+}
+
+@layer base {
+    .theme-light {
+        @each $key,
+        $value in map-get($theme, light) {
+            --#{$key}: #{hex-to-rgb($value)};
+        }
+    }
+
+    .theme-dark {
+        @each $key,
+        $value in map-get($theme, dark) {
+            --#{$key}: #{hex-to-rgb($value)};
+        }
+    }
+
+    // more themes...
+}

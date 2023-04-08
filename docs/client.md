@@ -22,35 +22,35 @@
 
 1. Create a new Vite project with the following command:
 
-    ```bash
-    npm init @vitejs/app
-    ```
+   ```bash
+   npm init @vitejs/app
+   ```
 
-    > ⚠️ You should run the command in the root folder of your project.
+   > ⚠️ You should run the command in the root folder of your project.
 
-    > 📖 Note: NPM should be installed on your machine.
+   > 📖 Note: NPM should be installed on your machine.
 
 2. Choose the following options:
 
-    ```bash
-    ? Project name: client
-    ? Select a framework: react
-    ? Select a variant: TypeScript / TypeScript + SWC
-    ```
+   ```bash
+   ? Project name: client
+   ? Select a framework: react
+   ? Select a variant: TypeScript / TypeScript + SWC
+   ```
 
 3. Go to the `client` folder with the following command:
 
-    ```bash
-    cd client
-    ```
+   ```bash
+   cd client
+   ```
 
 ## 🛠️ Step 2 - Setup tRPC
 
 1. Run the following command to install tRPC related packages:
 
-    ```bash
-    npm install @trpc/server @trpc/client @trpc/react-query @tanstack/react-query
-    ```
+   ```bash
+   npm install @trpc/server @trpc/client @trpc/react-query @tanstack/react-query
+   ```
 
 ### Create a tRPC router
 
@@ -58,153 +58,149 @@
 3. Create a new folder called `utils` inside the `global` folder.
 4. Create a new file called `trpc.ts` inside the `utils` folder.
 
-    Now your folder structure should similar to the following:
-      
-    ```bash
-    .
-    ├── node_modules
-    ├── public
-    ├── src
-    │   ├── global              # New folder
-    │   │   └── utils           # New folder
-    │   │       └── trpc.ts     # New file
-    │   ├── App.css
-    │   ├── App.tsx
-    │   ├── index.css
-    │   ├── main.tsx
-    │   └── vite-env.d.ts
-    ├── index.html
-    ├── package-lock.json
-    ├── package.json
-    ├── tsconfig.json
-    ├── tsconfig.node.json
-    └── vite.config.ts
-    ```
+   Now your folder structure should similar to the following:
 
-4. Add the following code to the `trpc.ts` file:
+   ```bash
+   .
+   ├── node_modules
+   ├── public
+   ├── src
+   │   ├── global              # New folder
+   │   │   └── utils           # New folder
+   │   │       └── trpc.ts     # New file
+   │   ├── App.css
+   │   ├── App.tsx
+   │   ├── index.css
+   │   ├── main.tsx
+   │   └── vite-env.d.ts
+   ├── index.html
+   ├── package-lock.json
+   ├── package.json
+   ├── tsconfig.json
+   ├── tsconfig.node.json
+   └── vite.config.ts
+   ```
 
-    ```ts
-    import { createTRPCReact } from "@trpc/react-query";
-    import type { AppRouter } from "../../../../server/src" //? By using import type you ensure that the reference will be stripped at compile-time, meaning you don't inadvertently import server-side code into your client.
+5. Add the following code to the `trpc.ts` file:
 
-    export const trpc = createTRPCReact<AppRouter>();
-    ```
+   ```ts
+   import { createTRPCReact } from "@trpc/react-query";
+   import type { AppRouter } from "../../../../server/src"; //? By using import type you ensure that the reference will be stripped at compile-time, meaning you don't inadvertently import server-side code into your client.
 
-    > 📖 Note: The `AppRouter` type is defined in the `server` folder.
+   export const trpc = createTRPCReact<AppRouter>();
+   ```
+
+   > 📖 Note: The `AppRouter` type is defined in the `server` folder.
 
 ### Create a tRPC provider
 
 5. Replace the code in the `main.tsx` file with the following code:
 
-    ```tsx
-    import React from "react"
-    import ReactDOM from "react-dom/client"
+   ```tsx
+   import React from "react";
+   import ReactDOM from "react-dom/client";
 
-    import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-    import { httpBatchLink } from "@trpc/client";
-    import { trpc } from "./global/utils/trpc";
+   import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+   import { httpBatchLink } from "@trpc/client";
+   import { trpc } from "./global/utils/trpc";
 
-    import App from "./App";
-    import "./index.css";
+   import App from "./App";
+   import "./index.css";
 
-    const trpcUrl = "http://127.0.0.1:5000";
-    const queryClient = new QueryClient();
-    const trpcClient = trpc.createClient({
-      links: [
-        httpBatchLink({
-          url: trpcUrl,
-        }),
-      ],
-    });
+   const trpcUrl = "http://127.0.0.1:5000";
+   const queryClient = new QueryClient();
+   const trpcClient = trpc.createClient({
+     links: [
+       httpBatchLink({
+         url: trpcUrl,
+       }),
+     ],
+   });
 
-    ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-      <>
-        <React.StrictMode>
-          <trpc.Provider client={trpcClient} queryClient={queryClient}>
-            <QueryClientProvider client={queryClient}>
-              <App />
-            </QueryClientProvider>
-          </trpc.Provider>
-        </React.StrictMode>
-      </>
-    );
-    ```
+   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+     <>
+       <React.StrictMode>
+         <trpc.Provider client={trpcClient} queryClient={queryClient}>
+           <QueryClientProvider client={queryClient}>
+             <App />
+           </QueryClientProvider>
+         </trpc.Provider>
+       </React.StrictMode>
+     </>
+   );
+   ```
 
 ### Test your tRPC setup (optional)
 
 6. Replace the code in the `App.tsx` file with the following code:
 
-    ```tsx
-    import { useEffect, useState } from "react"
-    import { trpc } from "./global/utils/trpc";
+   ```tsx
+   import { useEffect, useState } from "react";
+   import { trpc } from "./global/utils/trpc";
 
-    const App = () => {
-      const useQuery = trpc.api.helloWorld.useQuery({ msg: "It works!" });
-      const [data, setData] = useState<string>("Loading...")
+   const App = () => {
+     const useQuery = trpc.api.helloWorld.useQuery({ msg: "It works!" });
+     const [data, setData] = useState<string>("Loading...");
 
-      useEffect(() => {
-        if (useQuery.data)
-          setData(useQuery.data.msg);
-      }, [useQuery.data])
+     useEffect(() => {
+       if (useQuery.data) setData(useQuery.data.msg);
+     }, [useQuery.data]);
 
-      return (
-        <div>
-          <h1>{data}</h1>
-        </div>
-      )
-    }
+     return (
+       <div>
+         <h1>{data}</h1>
+       </div>
+     );
+   };
 
-    export default App
-    ```
+   export default App;
+   ```
 
-    > 📖 Note: Don't forget to start the server before testing your tRPC setup.
+   > 📖 Note: Don't forget to start the server before testing your tRPC setup.
 
 7. Go `http://127.0.0.1:5173` and you should see the following message:
 
-    ```
-    Hello World! It works!
-    ```
+   ```
+   Hello World! It works!
+   ```
 
 ## 🛠️ Step 3 - Setup Tailwind CSS
 
 1. Install Tailwind CSS related dependencies with the following command:
 
-    ```bash
-    npm install -D tailwindcss postcss autoprefixer
-    ```
+   ```bash
+   npm install -D tailwindcss postcss autoprefixer
+   ```
 
 ### Create a Tailwind CSS configuration file
 
 2. Run the following command to create a Tailwind CSS and PostCSS configuration file:
 
-    ```bash
-    npx tailwindcss init -p
-    ```
+   ```bash
+   npx tailwindcss init -p
+   ```
 
 3. Replace the code in the `tailwind.config.js` file with the following code:
 
-    ```js
-    /** @type {import('tailwindcss').Config} */
-    export default {
-      mode: "jit",
-      content: [
-        "./index.html",
-        "./src/**/*.{js,jsx,ts,tsx}",
-      ],
-      theme: {
-        extend: {},
-      },
-      plugins: [],
-    }
-    ```
+   ```js
+   /** @type {import('tailwindcss').Config} */
+   export default {
+     mode: "jit",
+     content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+     theme: {
+       extend: {},
+     },
+     plugins: [],
+   };
+   ```
 
 4. Add the following code to the `index.css` file:
 
-    ```css
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
-    ```
+   ```css
+   @tailwind base;
+   @tailwind components;
+   @tailwind utilities;
+   ```
 
 The Tailwind CSS configuration file is now ready.
 
@@ -212,171 +208,163 @@ The Tailwind CSS configuration file is now ready.
 
 1. Install SASS with the following command:
 
-    ```bash
-    npm install sass
-    ```
+   ```bash
+   npm install sass
+   ```
 
 2. Create a new folder called `css` in the `global`(src/global) folder.
 3. create a new file called `theme.scss` inside the `css` folder.
 
-    Now your folder structure should similar to the following:
-      
-      ```bash
-      .
-      ├── node_modules
-      ├── public
-      ├── src
-      │   ├── global
-      │   │   ├── css             # New folder
-      │   │   │   └── theme.scss  # New file
-      │   │   └── utils
-      │   │       └── trpc.ts
-      │   ├── App.css
-      │   ├── App.tsx
-      │   ├── index.css
-      │   ├── main.tsx
-      │   └── vite-env.d.ts
-      ├── index.html
-      ├── package-lock.json
-      ├── package.json
-      ├── postcss.config.js
-      ├── tailwind.config.js
-      ├── tsconfig.json
-      ├── tsconfig.node.json
-      └── vite.config.ts
-      ```
+   Now your folder structure should similar to the following:
 
-5. Add the following code to the `theme.scss` file:
+   ```bash
+   .
+   ├── node_modules
+   ├── public
+   ├── src
+   │   ├── global
+   │   │   ├── css             # New folder
+   │   │   │   └── theme.scss  # New file
+   │   │   └── utils
+   │   │       └── trpc.ts
+   │   ├── App.css
+   │   ├── App.tsx
+   │   ├── index.css
+   │   ├── main.tsx
+   │   └── vite-env.d.ts
+   ├── index.html
+   ├── package-lock.json
+   ├── package.json
+   ├── postcss.config.js
+   ├── tailwind.config.js
+   ├── tsconfig.json
+   ├── tsconfig.node.json
+   └── vite.config.ts
+   ```
 
-    ```css
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
+4. Add the following code to the `theme.scss` file:
 
-    $default-theme: light;
+   ```css
+   $default-theme: light;
 
-    $theme: (
-        light: (
-            // button
-            button-accent: #007aff
-            button-accent-hover: #e5f1ff
-            button-muted: #adb5bd
+   $theme: (
+     light: (
+       // button
+       button-accent: #007aff button-accent-hover: #e5f1ff button-muted: #adb5bd
+         // text
+       text-color-base: #000000 text-color-muted: #6c757d text-color-inverted:
+         #ffffff // background
+       bg-color-fill: #f8f9fa,
+     ),
+     dark: (
+       // button
+       button-accent: #ffffff,
+       button-accent-hover: #eef2ff,
+       button-muted: #6366f1,
 
-            // text
-            text-color-base: #000000
-            text-color-muted: #6c757d
-            text-color-inverted: #ffffff
+       // text
+       text-color-base: #ffffff,
+       text-color-muted: #c7d2fe,
+       text-color-inverted: #4f46e5,
 
-            // background
-            bg-color-fill: #f8f9fa
-        ),
-        dark: (
-            // button
-            button-accent: #ffffff,
-            button-accent-hover: #eef2ff,
-            button-muted: #6366f1,
+       // background
+       bg-color-fill: #121212,
+     ),
+     // more themes...
+   );
 
-            // text
-            text-color-base: #ffffff,
-            text-color-muted: #c7d2fe,
-            text-color-inverted: #4f46e5,
+   @function hex-to-rgb($hex) {
+     $r: red($hex);
+     $g: green($hex);
+     $b: blue($hex);
+     @return $r, $g, $b;
+   }
 
-            // background
-            bg-color-fill: #121212,
-        ),
-        // more themes...
-    );
+   @each $key, $value in map-get($theme, $default-theme) {
+     :root {
+       --#{$key}: #{hex-to-rgb($value)};
+     }
+   }
 
-    @function hex-to-rgb($hex) {
-        $r: red($hex);
-        $g: green($hex);
-        $b: blue($hex);
-        @return $r, $g, $b;
-    }
+   @layer base {
+     .theme-light {
+       @each $key, $value in map-get($theme, light) {
+         --#{$key}: #{hex-to-rgb($value)};
+       }
+     }
 
+     .theme-dark {
+       @each $key, $value in map-get($theme, dark) {
+         --#{$key}: #{hex-to-rgb($value)};
+       }
+     }
 
-    @each $key,
-    $value in map-get($theme, $default-theme) {
-        :root {
-            --#{$key}: #{hex-to-rgb($value)};
-        }
-    }
-
-    @layer base {
-        .theme-light {
-            @each $key,
-            $value in map-get($theme, light) {
-                --#{$key}: #{hex-to-rgb($value)};
-            }
-        }
-
-        .theme-dark {
-            @each $key,
-            $value in map-get($theme, dark) {
-                --#{$key}: #{hex-to-rgb($value)};
-            }
-        }
-
-        // more themes...
-    }
-    ```
+     // more themes...
+   }
+   ```
 
 ### Update Tailwind config file
 
 5. Replace the code in the `tailwind.config.js` file with the following code:
 
-    ```js
-    function withOpacity(variableName) {
-      return ({ opacityValue }) => {
-        if (opacityValue !== undefined) {
-          return `rgba(var(${variableName}), ${opacityValue})`
-        }
-        return `rgb(var(${variableName}))`
-      }
-    }
+   ```js
+   function withOpacity(variableName) {
+     return ({ opacityValue }) => {
+       if (opacityValue !== undefined) {
+         return `rgba(var(${variableName}), ${opacityValue})`;
+       }
+       return `rgb(var(${variableName}))`;
+     };
+   }
 
-    /** @type {import('tailwindcss').Config} */
-    export default {
-      mode: "jit",
-      content: [
-        "./index.html",
-        "./src/**/*.{js,jsx,ts,tsx}",
-      ],
-      theme: {
-        extend: {
-          textColor: {
-            skin: {
-              base: withOpacity("--text-color-base"),
-              muted: withOpacity("--text-color-muted"),
-              inverted: withOpacity("--text-color-inverted"),
-            },
-          },
-          backgroundColor: {
-            skin: {
-              fill: withOpacity("--bg-color-fill"),
-              "button-accent": withOpacity("--bg-color-button-accent"),
-              "button-accent-hover": withOpacity("--bg-color-button-accent-hover"),
-              "button-muted": withOpacity("--bg-color-button-muted"),
-            },
-          },
-          gradientColorStops: {
-            skin: {
-              hue: withOpacity("--gradient-color-stops-hue"),
-            },
-          },
-        },
-      },
-      plugins: [],
-    }
-    ```
+   /** @type {import('tailwindcss').Config} */
+   export default {
+     mode: "jit",
+     content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+     theme: {
+       extend: {
+         textColor: {
+           skin: {
+             base: withOpacity("--text-color-base"),
+             muted: withOpacity("--text-color-muted"),
+             inverted: withOpacity("--text-color-inverted"),
+           },
+         },
+         backgroundColor: {
+           skin: {
+             fill: withOpacity("--bg-color-fill"),
+             "button-accent": withOpacity("--bg-color-button-accent"),
+             "button-accent-hover": withOpacity(
+               "--bg-color-button-accent-hover"
+             ),
+             "button-muted": withOpacity("--bg-color-button-muted"),
+           },
+         },
+         gradientColorStops: {
+           skin: {
+             hue: withOpacity("--gradient-color-stops-hue"),
+           },
+         },
+       },
+     },
+     plugins: [],
+   };
+   ```
 
 ### Import the theme file
 
-6. Add the following code to the `main.tsx` file:
+6. Change the file extension of the `index.css` file to `scss` and add the following code to the file:
 
-    ```tsx
-    import "./global/css/theme.scss";
-    ```
+   ```scss
+   @import "./global/css/theme.scss";
+   ```
+
+7. Update the `main.tsx` file with the following code:
+
+   ```diff
+   - import "./index.css";
+   + import "./index.scss";
+   ```
 
 ### How to use the theme?
 
@@ -387,7 +375,7 @@ For example: apply skin color to the text:
 ```
 
 Apply the theme
-  
+
 ```tsx
 <div className="theme-dark">
   <p className="text-skin-base">Hello World!</p>
@@ -396,71 +384,120 @@ Apply the theme
 
 > 📖 Watch [Theming Tailwind with CSS Variables](https://youtu.be/MAtaT8BZEAo) to learn more about theming Tailwind CSS.
 
-## 🛠️ Minify HTML (Optional)
+## 🛠️ Minify (Optional)
 
 1. Install the `vite-plugin-minify` plugin with the following command:
 
-    ```bash
-    npm install vite-plugin-minify -D
-    ```
+   ```bash
+   npm install vite-plugin-minify -D
+   ```
 
 2. Add the following code to the `vite.config.ts` file:
 
-    ```ts
-    //...
-    import { ViteMinifyPlugin } from 'vite-plugin-minify'
+   ```diff
+    import { defineConfig } from 'vite'
+    import react from '@vitejs/plugin-react-swc'
+   + import { ViteMinifyPlugin } from 'vite-plugin-minify'
 
-    //...
     export default defineConfig({
-      //...
+   +   build: {
+   +     // remove the dist folder before building
+   +     emptyOutDir: true,
+   +     // minify the output
+   +     minify: true,
+   +   },
       plugins: [
-        //...
-        ViteMinifyPlugin({}),
+        react(),
+   +     // minify the HTML
+   +     ViteMinifyPlugin({}),
       ],
-      //...
     })
-    ```
+   ```
 
 ## 🛠️ Alias (Optional)
 
 1. Add the following code to the `vite.config.ts` file:
 
-    ```ts
-    //...
-    import path from 'node:path'
+   ```diff
+    import { defineConfig } from 'vite'
+    import react from '@vitejs/plugin-react-swc'
+    import { ViteMinifyPlugin } from 'vite-plugin-minify'
+   + import path from "node:path"
 
-    //...
     export default defineConfig({
-      //...
-      resolve: {
-        alias: {
-          '@src': path.resolve(__dirname, 'src'),
-        },
+      build: {
+        // remove the dist folder before building
+        emptyOutDir: true,
+        // minify the output
+        minify: true,
       },
-      //...
+   +   resolve: {
+   +     alias: {
+   +       // alias for the src folder
+   +       '@src': path.resolve(__dirname, './src'),
+   +     },
+   +   },
+      plugins: [
+        react(),
+        // minify the HTML
+        ViteMinifyPlugin({}),
+      ],
     })
-    ```
+   ```
+
+2. Update the `tsconfig.json` file with the following code:
+
+   ```diff
+   {
+     "compilerOptions": {
+       "target": "ESNext",
+       "useDefineForClassFields": true,
+       "lib": ["DOM", "DOM.Iterable", "ESNext"],
+       "allowJs": true,
+       "skipLibCheck": true,
+       "esModuleInterop": false,
+       "allowSyntheticDefaultImports": true,
+       "strict": true,
+       "forceConsistentCasingInFileNames": true,
+       "module": "ESNext",
+       "moduleResolution": "Node",
+       "resolveJsonModule": true,
+       "isolatedModules": true,
+       "noEmit": true,
+       "jsx": "react-jsx",
+       "baseUrl": "./",
+   +      "paths": {
+   +      "@src/*": ["src/*"]
+   +    }
+     },
+     "include": ["src"],
+     "references": [{ "path": "./tsconfig.node.json" }],
+   }
+
+   ```
 
 ### How to use alias?
 
 ```tsx
 // from
-import { Button } from "./src/components/Button"
+import { Button } from "./src/components/Button";
 
 // to
-import { Button } from "@src/components/Button"
+import { Button } from "@src/components/Button";
 ```
 
 ## 📒 References
 
 ### tRPC
+
 - https://trpc.io/docs/quickstart
 - https://trpc.io/docs/reactjs/setup
 
 ### Tailwind CSS
+
 - https://tailwindcss.com/docs/installation
 - [How to Setup React and Tailwind CSS with Vite in a Project](https://www.freecodecamp.org/news/how-to-install-tailwindcss-in-react/)
 
-
 ##
+
 🔙 [Back to the main page](../README.md)

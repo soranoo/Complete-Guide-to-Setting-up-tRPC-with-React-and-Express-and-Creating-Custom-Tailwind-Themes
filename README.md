@@ -2,6 +2,8 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)&nbsp;&nbsp;&nbsp;[![Donation](https://img.shields.io/static/v1?label=Donation&message=❤️&style=social)](https://github.com/soranoo/Donation)
 
+Give me a ⭐ if you like it.
+
 ## 📚 Table of Contents
 
 - [📖 What is ...](#what-is)
@@ -72,6 +74,9 @@ You should have the following tools installed:
 > 📖 If you decide to use Yarn, replace all `npm` commands with `yarn`.
 
 ## 🚀 Getting Started
+
+You may download the source code from [here](/demo) or follow the guide below to create your own project.
+
 1. Create a new directory for your project. (we will call it `root` directory)
 2. Open the directory in your terminal.
 3. Follow Server Side guide [here](/docs/server.md).
@@ -82,10 +87,9 @@ You should have the following tools installed:
 Contributions are welcome!
 
 ## 📜 License
-
 This guide is licensed under the [MIT License](LICENSE)
 
 ## ☕ Donation
-Love the program? Consider a donation to support my work.
+Love the guide? Consider a donation to support my work.
 
 [!["Donation"](https://raw.githubusercontent.com/soranoo/Donation/main/resources/image/DonateBtn.png)](https://github.com/soranoo/Donation) <- click me~
